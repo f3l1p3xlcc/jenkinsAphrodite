@@ -1,31 +1,16 @@
+Jenkinsfile (Declarative Pipeline)
+
 pipeline {
     agent any
 
     stages {
-        stage ('Compile Stage') {
-
+        stage('Test') {
             steps {
-                withMaven(maven : 'maven_3_1') {
-                    sh 'mvn clean compile'
-                }
-            }
-        }
-
-        stage ('Testing Stage') {
-
-            steps {
-                withMaven(maven : 'maven_3_1') {
-                    sh 'mvn test'
-                }
-            }
-        }
-
-
-        stage ('Deployment Stage') {
-            steps {
-                withMaven(maven : 'maven_3_1') {
-                    sh 'mvn deploy'
-                }
+                /* `make check` returns non-zero on test failures,
+                * using `true` to allow the Pipeline to continue nonetheless
+                */
+                sh 'make check || true' 
+                junit '**/target/*.xml' 
             }
         }
     }
